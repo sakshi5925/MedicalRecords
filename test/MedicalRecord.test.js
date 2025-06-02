@@ -27,30 +27,23 @@ describe("MedicalRecord", () => {
                     "fever"
                 )
             transactionReceipt = await transactionResponse.wait();
-            // console.log("transaction logs\n", transactionReceipt.logs[0].fragment.name);
 
         });
 
         it("Emits a add record event", async () => {
-            // const event=await transactionReceipt.events[0];
-            // const event = transactionReceipt.logs.find(log => log.event === "Medical_Record_Add");
-            // expect(event.event).to.equal("Medical_Record_Add")
-            // const args=event.args;
-            const eventLog = transactionReceipt.logs
-                .map(log => {
-                    try {
-                        return { args: log.args, name: log.fragment.name };
-                    } catch {
-                        return null;
-                    }
-                })
+            const eventLog = transactionReceipt.logs.map(log => {
+                try {
+                    return { args: log.args, name: log.fragment.name };
+                } catch {
+                    return null;
+                }
+            })
 
             expect(eventLog).to.not.be.null;
-            console.log("eventLog\n",eventLog);
+            console.log("eventLog\n", eventLog);
             expect(eventLog[0].name).to.equal("MedicalRecords__AddRecord");
 
             const args = eventLog[0].args;
-            // console.log("args", args);
             expect(args.timestamp).to.not.equal(0);
             expect(args.name).to.equal("sakshi");
             expect(args.age).to.equal(20);
@@ -59,5 +52,60 @@ describe("MedicalRecord", () => {
             expect(args.diagnosis).to.equal("fever");
             expect(args.treatment).to.equal("fever");
         });
+
+        it("Getrecords function is working properly or not", async () => {
+            const [timestamp, name, age, gender, bloodType, allergies, diagnosis, treatment] = await medical.getRecord(1);
+            expect(await medical.getRecordId()).to.equal(1);
+            expect(timestamp).to.not.equal(0);
+            expect(name).to.equal("sakshi");
+            expect(age).to.equal(20);
+            expect(bloodType).to.equal("A positive");
+            expect(allergies).to.equal("fever");
+            expect(diagnosis).to.equal("fever");
+            expect(treatment).to.equal("fever");
+        })
+    })
+    describe("Delete", () => {
+        beforeEach(async () => {
+            transactionResponse = await medical
+                .connect(user0)
+                .addRecord(
+                    "sakshi",
+                    20,
+                    "Female",
+                    "A positive",
+                    "fever",
+                    "fever",
+                    "fever"
+                )
+            transactionReceipt = await transactionResponse.wait();
+            transactionResponse = await medical.connect(user0).deleteRecord(1);
+            transactionReceipt = await transactionResponse.wait();
+        })
+
+        it("Record is present in the is deleted mappings", async () => {
+            expect(await medical.getDeleted(1)).to.equal(true);
+        })
+        it("It emits a delete event or not", async () => {
+            const eventLog = transactionReceipt.logs.map(log => {
+                try {
+                    return { args: log.args, name: log.fragment.name };
+                } catch {
+                    return null;
+                }
+            })
+            expect(eventLog).to.not.be.null;
+            console.log("eventLog\n", eventLog);
+            expect(eventLog[0].name).to.equal("MedicalRecords__DeleteRecord");
+
+            const args = eventLog[0].args;
+            expect(args.timestamp).to.not.equal(0);
+            expect(args.name).to.equal("sakshi");
+            expect(args.age).to.equal(20);
+            expect(args.bloodType).to.equal("A positive");
+            expect(args.allergies).to.equal("fever");
+            expect(args.diagnosis).to.equal("fever");
+            expect(args.treatment).to.equal("fever");
+        })
     })
 })
