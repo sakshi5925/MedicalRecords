@@ -1053,10 +1053,10 @@ const main = async () => {
     await transactionResponse.wait();
     console.log(`Record added with the id ${await medical.getRecordId()}`);
 
-    transactionResponse = await medical.connect(user1).deleteRecord(6);
+    transactionResponse = await medical.connect(user1).deleteRecord(4);
     await transactionResponse.wait();
     console.log('Record Deleted');
-    transactionResponse = await medical.connect(user1).deleteRecord(9);
+    transactionResponse = await medical.connect(user1).deleteRecord(10);
     await transactionResponse.wait();
     console.log('Record Deleted');
 }
