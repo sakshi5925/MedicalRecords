@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import './App.css'
 import { useEffect } from 'react'
 import {  loadProvider } from './store/interaction';

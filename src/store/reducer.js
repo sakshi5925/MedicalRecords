@@ -1,6 +1,7 @@
 export const provider=(state={},action)=>{
     switch (action.type){
         case "PROVIDER_LOADED":
+
             return {
                 ...state,
                 connection:action.connection,
@@ -31,6 +32,7 @@ const DEFAULT_MEDICAL_STATE={
     loaded:false,
     contract:{}
 };
+
 export const medical=(state=DEFAULT_MEDICAL_STATE,action)=>{
     switch(action.type){
         case "MEDICAL_LOADED":
@@ -41,5 +43,6 @@ export const medical=(state=DEFAULT_MEDICAL_STATE,action)=>{
             };
             default:
                 return state;       
+
     }
 }
