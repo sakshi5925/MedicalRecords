@@ -1,14 +1,18 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { submitRecord } from '../store/interaction';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
 const Form = () => {
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const medical = useSelector((state) => state.medical.contract);
   const account = useSelector((state) => state.provider.account);
-  const provider=useSelector((state)=>state.provider.connection);
-  const onSubmit = async(data) => {
-    await submitRecord(data.name,
+  const provider = useSelector((state) => state.provider.connection);
+
+  const onSubmit = async (data) => {
+    await submitRecord(
+      data.name,
       data.age,
       data.gender,
       data.bloodType,
@@ -18,10 +22,9 @@ const Form = () => {
       provider,
       medical,
       dispatch
-
-
     );
-    console.log(data);
+    console.log("medical", medical);
+    console.log("data", data);
   };
 
   return (
@@ -122,17 +125,16 @@ const Form = () => {
             {errors.treatment && <p className="text-red-500 text-sm">Treatment is required</p>}
           </div>
 
-          {/* Submit */}
-          <div className="text-center">
-            <input
-              type="submit"
-              value="Submit"
-              className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
-            />
-          </div>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+          >
+            Submit Record
+          </button>
         </form>
       ) : (
-        <p className="text-center text-red-600 text-xl">Connect the account first</p>
+        <p className="text-lg text-gray-600">Please connect your account to submit records.</p>
       )}
     </div>
   );
